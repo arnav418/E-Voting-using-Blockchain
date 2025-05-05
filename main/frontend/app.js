@@ -179,7 +179,7 @@ function updateTimerDisplay(timeLeft) {
 async function logout() {
     alert("✅ You have been logged out!");
     clearInterval(logoutTimer);
-    window.location.href = "/auth.html"; // Redirect to login page
+    window.location.href = "/login.html"; // Redirect to login page
 }
 
 // Attach event listeners
