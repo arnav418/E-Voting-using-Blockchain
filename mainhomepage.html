@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/e-voting-blockchain/frontend/favicon.ico  " type="image/x-icon">
+    <title>E-Voting using Blockchain</title>
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0d0d0d, #1a1a2e);
+            color: #ffffff;
+            text-align: center;
+            padding-top: 80px;
+            scroll-behavior: smooth;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000; /* Ensures it stays above other elements */
+            padding: 20px;
+            font-size: 22px;
+            font-family: Poppins;
+            /* font-weight: bold; */
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            text-transform: uppercase;
+}
+
+        .hero {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+            padding: 20px;
+        }
+
+        /* Typing animation text */
+        .hero h1 {
+            font-size: 38px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #ff00ff, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            border-right: 3px solid white;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .hero p {
+            font-size: 18px;
+            max-width: 600px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+
+        /* Button styles */
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .btn {
+            width: 48%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s ease-in-out;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+            text-decoration: none;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: 0.4s ease-in-out;
+        }
+
+        .btn:hover::after {
+            left: 0;
+        }
+
+        .btn-user {
+            background: linear-gradient(45deg, #ff00ff, #8a2be2);
+            border-color: #ff00ff;
+            box-shadow: 0px 0px 20px rgba(255, 0, 255, 0.6);
+        }
+
+        .btn-user:hover {
+            background: linear-gradient(45deg, #ff1493, #9400d3);
+            transform: scale(1.05);
+            box-shadow: 0px 0px 25px rgba(255, 0, 255, 0.8);
+        }
+
+        .btn-admin {
+            background: linear-gradient(45deg, #00ffff, #008080);
+            border-color: #00ffff;
+            box-shadow: 0px 0px 20px rgba(0, 255, 255, 0.6);
+        }
+
+        .btn-admin:hover {
+            background: linear-gradient(45deg, #00bfff, #2e8b57);
+            transform: scale(1.05);
+            box-shadow: 0px 0px 25px rgba(0, 255, 255, 0.8);
+        }
+
+        /* Features Section */
+        .features {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            margin: 40px auto;
+            padding: 40px;
+            max-width: 800px;
+            box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .features h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .features p {
+            font-size: 16px;
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 15px;
+            font-size: 14px;
+            opacity: 0.6;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            margin-top: 40px;
+        }
+
+        @media (max-width: 600px) {
+            .btn-container {
+                flex-direction: column;
+                width: 100%;
+                max-width: 250px;
+            }
+
+            .btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>E-Voting using Blockchain</header>
+
+    <div class="hero">
+        <h1 id="typing-text"></h1>
+        <p>Experience the future of voting with blockchain technology. Secure, immutable, and completely transparent.</p>
+        <div class="btn-container">
+            <a href="login.html" target="_blank" class="btn btn-user">User Login</a>
+            <a href="useradmin.html" target="_blank" class="btn btn-admin">Admin Login</a>
+        </div>
+    </div>
+
+    <div class="features">
+        <h2>Key Features</h2>
+        <p>✔️ Secure & tamper-proof blockchain records<br>
+           ✔️ Fully transparent voting process<br>
+           ✔️ Anonymous & private voting<br>
+           ✔️ Instant and accurate results</p>
+    </div>
+
+    <div class="footer">
+        &copy; 2025 E-Voting System using Blockchain | Created with 💓
+    </div>
+
+    <script>
+        const texts = ["Secure & Transparent Voting", "With Blockchain", "With MetaMask Wallet 💰"];
+        let textIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typingText = document.getElementById("typing-text");
+
+        function type() {
+            let currentText = texts[textIndex];
+            
+            if (!isDeleting && charIndex < currentText.length) {
+                typingText.innerHTML = currentText.substring(0, charIndex + 1);
+                charIndex++;
+                setTimeout(type, 100);
+            } 
+            else if (isDeleting && charIndex > 0) {
+                typingText.innerHTML = currentText.substring(0, charIndex - 1);
+                charIndex--;
+                setTimeout(type, 50);
+            } 
+            else {
+                isDeleting = !isDeleting;
+                if (!isDeleting) {
+                    textIndex = (textIndex + 1) % texts.length;
+                }
+                setTimeout(type, 1000);
+            }
+        }
+        type();
+    </script>
+
+</body>
+</html>
+ 
