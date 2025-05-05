@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Voting Portal</h1>
+        <p> ⚠️ Please Vote Accordingly and Your Respective Candidate.</p>
+        <p> ⚠️ We'll Provide Only 1 min of Window to vote.</p>
+        <p id="timerDisplay">Time Left: --:--</p>
+
+
+        <!-- Connect Wallet & Logout -->
+        <div class="wallet-section">
+            <span id="walletAddress">Your MetaMask Wallet Address will display here</span>
+            <div class="wallet-buttons">
+                <button id="connectWallet">Connect Wallet</button>
+                <button id="logoutBtn" class="logout-btn">Logout</button>
+            </div>
+        </div>
+
+        <!-- Candidates Section -->
+        <div id="election">
+            <h2>Candidates</h2>
+            <ul id="candidatesList"></ul>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

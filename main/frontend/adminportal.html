@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0d0d0d, #1a1a2e);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1100px;
+            padding: 10px;
+        }
+        
+        .header h1 {
+            flex: 1;
+            text-align: left;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            text-align: center;
+            flex: 1;
+            min-width: 320px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .styled-box {
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid #00ffff;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0px 0px 15px rgba(0, 255, 255, 0.5);
+            /* font-weight: bold; */
+            font-size: 1.2 rem;
+            font-family: Poppins;
+            margin-top: 10px;
+        }
+
+        button {
+            background: linear-gradient(45deg, #ff00ff, #8a2be2);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0px 0px 15px rgba(255, 0, 255, 0.5);
+            /* text-transform: uppercase; */
+        }
+
+        #walletAddress {
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 300px !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <div class="header">
+        <h1>Welcome to Admin Portal</h1>
+        <div class="header-buttons">
+            <button id="connectWallet">Connect Wallet</button>
+            <button id="logoutWallet">Logout</button>
+        </div>
+    </div>
+
+    <p id="walletAddress">Please Connect your Metamask Wallet 💰</p>
+
+    <div class="container">
+        <div class="box">
+            <h2>Candidates</h2>
+            <ul id="candidatesList"></ul>
+        </div>
+
+        <div class="box">
+            <h2>Vote-Count</h2>
+            <ul id="votingResultsList"></ul>
+        </div>
+
+        <div class="box">
+            <h2>Winning Percentage</h2>
+            <ul id="winningPercentageList"></ul>
+        </div>
+
+        <div class="box">
+            <h2>Repeat Voters</h2>
+            <ul id="repeatVotersList"></ul>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <h2>Voting Results Visualization</h2>
+        <canvas id="voteChart"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.0/dist/ethers.umd.min.js"></script>
+    <script>
+        const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+        let contractABI;
+        let provider;
+        let signer;
+        let contract;
+        let currentAccount;
+        let voteChart;
+        let repeatVoters = new Set(); // Track users who attempt to log in after voting
+
+        async function loadABI() {
+            try {
+                const response = await fetch('./ElectionABI.json');
+                contractABI = await response.json();
+                console.log("ABI Loaded Successfully.");
+            } catch (error) {
+                console.error("Failed to load ABI:", error);
+            }
+        }
+
+        async function connectWallet() {
+            if (window.ethereum) {
+                try {
+                    provider = new ethers.providers.Web3Provider(window.ethereum);
+                    await provider.send("eth_requestAccounts", []);
+                    signer = provider.getSigner();
+                    currentAccount = await signer.getAddress();
+                    document.getElementById("walletAddress").innerText = `Current-Wallet-Address: ${currentAccount}`;
+
+                    if (!contractABI) await loadABI();
+
+                    contract = new ethers.Contract(contractAddress, contractABI, signer);
+                    console.log("Connected to wallet successfully.");
+                    await checkIfVoted();
+                    await loadCandidates();
+                } catch (error) {
+                    console.error("Wallet connection error:", error);
+                    alert("Failed to connect wallet.");
+                }
+            } else {
+                alert("Please install MetaMask!");
+            }
+        }
+
+        async function checkIfVoted() {
+            try {
+                const hasVoted = await contract.hasUserVoted(currentAccount);
+                if (hasVoted) {
+                    console.log("⚠️ User has already voted.");
+                    if (!repeatVoters.has(currentAccount)) {
+                        repeatVoters.add(currentAccount);
+                        updateRepeatVotersList();
+                    }
+                }
+            } catch (error) {
+                console.error("Error checking vote status:", error);
+            }
+        }
+
+        function updateRepeatVotersList() {
+            let repeatVotersList = document.getElementById("repeatVotersList");
+            repeatVotersList.innerHTML = "";
+            repeatVoters.forEach(account => {
+                repeatVotersList.innerHTML += `<li class="styled-box">${account}</li>`;
+            });
+        }
+
+        async function loadCandidates() {
+            try {
+                const candidateCount = (await contract.candidatesCount()).toNumber();
+                let totalVotes = 0;
+                let candidateNames = [];
+                let candidateVotes = [];
+
+                let candidatesList = document.getElementById("candidatesList");
+                let votingResultsList = document.getElementById("votingResultsList");
+                let winningPercentageList = document.getElementById("winningPercentageList");
+
+                candidatesList.innerHTML = "";
+                votingResultsList.innerHTML = "";
+                winningPercentageList.innerHTML = "";
+
+                for (let i = 1; i <= candidateCount; i++) {
+                    const candidate = await contract.candidates(i);
+                    let votes = candidate.voteCount.toNumber();
+                    totalVotes += votes;
+
+                    candidateNames.push(candidate.name);
+                    candidateVotes.push(votes);
+
+                    candidatesList.innerHTML += `<li class="styled-box">${candidate.name}</li>`;
+                    votingResultsList.innerHTML += `<li class="styled-box">${candidate.name} - ${votes} votes</li>`;
+                }
+
+                for (let i = 0; i < candidateNames.length; i++) {
+                    let percentage = totalVotes > 0 ? ((candidateVotes[i] / totalVotes) * 100) : 0;
+                    winningPercentageList.innerHTML += `<li class="styled-box">${candidateNames[i]} - ${percentage.toFixed(2)}%</li>`;
+                }
+
+                updateChart(candidateNames, candidateVotes);
+            } catch (error) {
+                console.error("Error loading candidates:", error);
+            }
+        }
+
+        function updateChart(labels, data) {
+            const ctx = document.getElementById("voteChart").getContext("2d");
+
+            if (voteChart) voteChart.destroy();
+
+            voteChart = new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: [{ label: "Votes", data: data, backgroundColor: ["#ff00ff", "#00ffff"], borderColor: "#ffffff", borderWidth: 1 }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    scales: {
+                        x: {
+                            min: 0,
+                            max: 10,
+                            ticks: { color: "#fff" }
+                        },
+                        y: { ticks: { color: "#fff" } }
+                    }
+                }
+            });
+        }
+
+        function logoutWallet() {
+            if (currentAccount) window.location.href = "/admin.html";
+        }
+
+        document.getElementById("connectWallet").addEventListener("click", connectWallet);
+        document.getElementById("logoutWallet").addEventListener("click", logoutWallet);
+        loadABI();
+    </script>
+
+</body>
+</html>

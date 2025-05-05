@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Register</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+        *{
+            font-family: Poppins;
+        }
+
+    body { 
+    font-family: 'Poppins', sans-serif; 
+    text-align: center; 
+    background: #121212;
+    background-image: url(/main/Vote.jpg);
+    background-size: auto;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container { 
+    width: 320px; 
+    padding: 25px; 
+    height: 45vh;
+    display: flex;
+    flex-direction: column;
+    /* gap: 2px; */
+    align-items: center;
+    background: #1e1e1e;
+    border-radius: 12px; 
+    /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); */
+    box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+}
+.container a{
+    /* text-decoration: none; */
+    color: white;
+}
+
+#body-img{
+    height: 400px;
+    border: 2px solid black;
+    border-radius: 12px;
+    /* z-index: -1000; */
+    position: relative;
+    left: 20px;
+    box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+
+}
+
+.hidden { 
+    display: none; 
+}
+
+button { 
+    width: 30%;
+    padding: 10px; 
+    margin-top: 10px;
+    border: none; 
+    border-radius: 8px; 
+    font-size: 16px;
+    /* font-weight: 600; */
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover { 
+    transform: scale(1.05);
+    background-color: rgb(45, 45, 149);
+    color: white    ;
+}
+
+#form-title{
+    font-size: 2rem;
+}
+
+#email{
+    padding: 6px;
+    border-radius: 10px;
+    border: 2px solid white;
+    color: white;
+    background: transparent;
+    width: 76%;
+    font-size: 1.1rem;
+}
+
+#password{
+    width: 76%;
+    padding: 6px;
+    border-radius: 10px;
+    border: 2px solid white;
+    color: white;
+    background: transparent;
+    outline: none;
+    font-size: 1.1rem;
+}
+
+button.primary {
+    background: #ff6b6b; 
+    color: #fff;
+}
+
+button.secondary {
+    background: #4dabf7;
+    color: #fff;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+
+    </style>
+</head>
+<body>
+    <img src="main/Vote.jpg" alt="img" id="body-img">
+
+    <div class="container">
+        <h2 id="form-title">Voter's Login</h2>
+
+        <input type="email" id="email" placeholder="Enter Email"><br>
+        <input type="password" id="password" placeholder="Enter Password"><br>
+
+        <button id="auth-button">Login</button>
+        <p id="toggle-text">Don't have an account? <a href="#" id="toggle-link">Register</a></p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
+
+        // ✅ Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCA7fThQiyaTlwYSq5rXbZCmZt9PK4oIaQ",
+            authDomain: "e---voting-using-blockchain.firebaseapp.com",
+            projectId: "e---voting-using-blockchain",
+            storageBucket: "e---voting-using-blockchain.appspot.com",
+            messagingSenderId: "877869495098",
+            appId: "1:877869495098:web:854a727677b446a8555603",
+            measurementId: "G-4YDN0ZNEE8"
+        };
+
+        // ✅ Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        console.log("✅ Firebase Initialized:", app);
+        console.log("✅ Auth Instance:", auth);
+
+        let isLogin = true; // Default mode is Login
+
+        // ✅ Function to Toggle Login & Registration Mode
+        window.toggleForm = function () {
+            isLogin = !isLogin;
+            document.getElementById("form-title").innerText = isLogin ? "Login" : "Register";
+            document.getElementById("auth-button").innerText = isLogin ? "Login" : "Register";
+            document.getElementById("toggle-text").innerHTML = isLogin
+                ? `Don't have an account? <a href="#" id="toggle-link">Register</a>`
+                : `Already have an account? <a href="#" id="toggle-link">Login</a>`;
+            
+            // Reattach event listener
+            document.getElementById("toggle-link").addEventListener("click", toggleForm);
+        };
+
+        // ✅ Function for Authentication (Login/Register)
+        window.authAction = function () {
+            let email = document.getElementById("email").value.trim();
+            let password = document.getElementById("password").value.trim();
+
+            if (!email || !password) {
+                alert("⚠️ Please enter an email and password.");
+                return;
+            }
+
+            if (password.length < 6) {
+                alert("⚠️ Password must be at least 6 characters.");
+                return;
+            }
+
+            if (isLogin) {
+                console.log("🔵 Attempting Login...");
+                signInWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        console.log("✅ Login Successful:", userCredential);
+                        alert("✅ Login Successful!");
+                        window.location.href = "/main/frontend/index.html"; 
+                    })
+                    .catch((error) => {
+                        console.error("❌ Login Error:", error);
+                        alert(error.message);
+                    });
+            } else {
+                console.log("🟢 Attempting Registration...");
+                createUserWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        console.log("✅ Registration Successful:", userCredential);
+                        alert("✅ Registration Successful! You can now log in.");
+                        toggleForm(); // Switch to Login Mode
+                    })
+                    .catch((error) => {
+                        console.error("❌ Registration Error:", error);
+                        alert(error.message);
+                    });
+            }
+        };
+
+        // ✅ Attach event listeners to buttons
+        document.getElementById("auth-button").addEventListener("click", authAction);
+        document.getElementById("toggle-link").addEventListener("click", toggleForm);
+
+    </script>
+
+</body>
+</html>
