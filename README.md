@@ -18,7 +18,7 @@ A secure, transparent, and decentralized electronic voting system leveraging **B
 
 | Layer          | Technology                     |
 |----------------|--------------------------------|
-| Frontend       | HTML, CSS, JavaScript / React  |
+| Frontend       | HTML, CSS, JavaScript          |
 | Smart Contract | Solidity                       |
 | Blockchain     | Hardhat (Local Ethereum Node)  |
 | Wallet         | MetaMask                       |
